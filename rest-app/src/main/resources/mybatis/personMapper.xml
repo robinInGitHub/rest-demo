@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cdel.rest.web.dao.PersonMapper">
+    <sql id="Person_Column">
+        id, name, age
+    </sql>
+    <select id="get" resultType="com.cdel.rest.web.entity.Person" parameterType="java.lang.Integer" flushCache="true">
+        select <include refid="Person_Column" />
+        from person
+        where id = #{id}
+    </select>
+    <select id="getAll" resultType="com.cdel.rest.web.entity.Person" flushCache="true">
+        select <include refid="Person_Column" />
+        from person
+        order by id
+    </select>
+</mapper>

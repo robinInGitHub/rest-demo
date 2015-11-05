@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 是否启用缓存 -->
+	<settings>
+        <setting name="cacheEnabled" value="true" />
+    </settings>
+    
+    <!--类别名  -->
+	<typeAliases>
+		<typeAlias type="com.cdel.rest.entity.Person" alias="person"/>
+	</typeAliases>
+	
+	
+</configuration>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cdel.rest.dao.write.PersonMapper">
+    <sql id="Person_Column">
+        id, name, age
+    </sql>
+    <insert id="save" parameterType="com.cdel.rest.entity.Person">
+        insert into person (name, age)
+        values (#{name}, #{age})
+    </insert>
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from person where id = #{id}
+    </delete>
+    <update id="update" parameterType="com.cdel.rest.entity.Person">
+        update person
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="age != null">age = #{age},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

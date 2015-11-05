@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.cdel.rest</groupId>
+    <artifactId>rest-demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.cdel.rest</groupId>
+  <artifactId>spring-boot-demo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>spring-boot-demo Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  
+  <properties>
+    	<spring.version>3.0.5.RELEASE</spring.version>
+        <jersey.version>1.1.4.1</jersey.version>
+        <spring.boot.version>1.2.7.RELEASE</spring.boot.version>
+        <!-- Avoids MacRoman encoding on OSX -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  
+  <dependencies>
+  
+  	<!-- Unit Testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- spring boot -->
+    	<dependency>  
+            <groupId>org.springframework.boot</groupId>  
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>  
+        <dependency>  
+            <groupId>org.springframework.boot</groupId>  
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>  
+        <dependency>  
+            <groupId>org.springframework.boot</groupId>  
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>  
+        <dependency>  
+            <groupId>org.springframework</groupId>  
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>  
+            <groupId>org.mybatis</groupId>  
+            <artifactId>mybatis</artifactId>
+            <version>3.2.8</version>
+        </dependency>  
+        <dependency>  
+            <groupId>org.mybatis</groupId>  
+            <artifactId>mybatis-spring</artifactId>
+            <version>1.2.2</version>  
+        </dependency>  
+        <!-- <dependency>  
+            <groupId>com.alibaba</groupId>  
+            <artifactId>druid</artifactId>  
+        </dependency>  
+        <dependency>  
+            <groupId>mysql</groupId>  
+            <artifactId>mysql-connector-java</artifactId>  
+        </dependency>  
+        <dependency>  
+            <groupId>com.github.pagehelper</groupId>  
+            <artifactId>pagehelper</artifactId>  
+        </dependency>  
+        <dependency>  
+            <groupId>tk.mybatis</groupId>  
+            <artifactId>mapper</artifactId>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.mybatis.generator</groupId>  
+            <artifactId>mybatis-generator-core</artifactId>  
+        </dependency> -->
+    
+    
+    <!-- Jersey -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    
+    <!-- Jersey Support for JSON -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    
+    <!-- Logging -->
+	<dependency>
+	  <groupId>log4j</groupId>
+	  <artifactId>log4j</artifactId>
+	  <version>1.2.16</version>
+	</dependency>    
+  </dependencies>
+  <repositories>
+        <!-- Jersey Official Maven Repo -->
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for maven</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+        <!-- Spring Official Maven Repo -->
+        <repository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>EBR Spring Release Repository</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>EBR External Release Repository</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+    </repositories>
+  
+  <build>
+    <finalName>spring-boot-demo</finalName>
+    <outputDirectory>${basedir}/src/main/webapp/WEB-INF/classes/</outputDirectory>
+        <plugins>
+            <!-- 清空本地WEB-INF/lib -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean_local_lib</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <tasks>
+                                <echo>Clean local lib and classes. </echo>
+                                <delete dir="src/main/webapp/WEB-INF/lib" />
+                                <delete dir="src/main/webapp/WEB-INF/classes" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.3</version>
+                    <executions>
+                        <execution>
+                            <id>copy-dependencies</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>src/main/webapp/WEB-INF/lib</outputDirectory>
+                                <excludeArtifactIds>jsp-api,servlet-api</excludeArtifactIds>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+        </plugins>
+  </build>
+</project>
