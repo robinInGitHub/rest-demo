@@ -22,8 +22,8 @@
 				<td width="20%">${person.name}</td>
 				<td width="20%">${person.age}</td>
 				<td width="30%"><a
-					href="javascript:Person.modifyUserView('${person.id}');">修改</a> <a
-					href="javascript:Person.deleteUser('${person.id}');">删除</a></td>
+					href="javascript:Person.modifyPersonView('${person.id}');">修改</a> <a
+					href="javascript:Person.deletePerson('${person.id}');">删除</a></td>
 			</tr>
 		</table>
 	</div>

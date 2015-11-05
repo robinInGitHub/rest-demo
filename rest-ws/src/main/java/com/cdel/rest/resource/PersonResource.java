@@ -59,7 +59,6 @@ public class PersonResource {
 		} catch (Exception e) {
 			logger.error("Params Error", e);
 		}
-		System.out.println("yang");
 	}
 	
 	@PUT

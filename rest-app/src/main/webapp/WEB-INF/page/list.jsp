@@ -10,17 +10,12 @@ tr,td{border:solid #add9c0; border-width:0px 1px 1px 0px;}
 table{border:solid #add9c0; border-width:1px 0px 0px 1px; }
 </style>
 <script type="text/javascript" src="${_currConText}/js/person/person.js"></script>
-<script type="text/javascript">
-function addPersonView(){
-	window.location.href=_currConText+"/person/add.do"; 
-}
-</script>
 </head>
 <body>
 	<div id="content">
 		<h3>Person List</h3>
 		<p>
-			<input type="button" value="新增 用户" onclick="addPersonView();" />
+			<input type="button" value="新增 用户" onclick="Person.addPersonView();" />
 		<p>
 		<table cellpadding="1" cellspacing="1" width="60%">
 			<tr bgcolor="#DBFAC2" align="center">

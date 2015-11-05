@@ -1,5 +1,6 @@
 package com.cdel.rest.web.entity;
 
+import org.springframework.stereotype.Component;
 
 /**
  * @ClassName: Person
@@ -8,6 +9,7 @@ package com.cdel.rest.web.entity;
  * @date 2015年11月2日 下午7:45:32
  *
  */
+@Component
 public class Person {
 	
 	private Integer id;
