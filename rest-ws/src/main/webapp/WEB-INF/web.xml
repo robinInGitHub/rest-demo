@@ -18,13 +18,17 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
         <init-param>  
         	<param-name>com.sun.jersey.config.property.packages</param-name>  
-        	<param-value>com.example</param-value>  
-    	</init-param>  
+        	<param-value>com.cdel.rest</param-value>
+    	</init-param>
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>com.cdel.rest.security.AuthRequestFilter</param-value>
+        </init-param>
     	<init-param>  
         	<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>  
         	<param-value>true</param-value>  
     	</init-param>  
-    	<load-on-startup>2</load-on-startup>
+    	<load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey Spring Web Application</servlet-name>

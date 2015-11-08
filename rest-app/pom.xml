@@ -113,9 +113,21 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
 			<version>${jersey.version}</version>
-		</dependency>	
-		
-		<!-- java ee jar -->
+		</dependency>
+
+        <!-- jersey oauth -->
+		<dependency>
+			<groupId>com.sun.jersey.contribs.jersey-oauth</groupId>
+			<artifactId>oauth-client</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs.jersey-oauth</groupId>
+			<artifactId>oauth-signature</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+
+        <!-- java ee jar -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>

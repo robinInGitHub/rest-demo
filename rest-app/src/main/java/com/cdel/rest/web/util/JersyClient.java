@@ -7,9 +7,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.MediaType;
-
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
+import com.sun.jersey.json.impl.provider.entity.JSONRootElementProvider;
+import com.sun.jersey.oauth.client.OAuthClientFilter;
+import com.sun.jersey.oauth.signature.OAuthParameters;
+import com.sun.jersey.oauth.signature.OAuthSecrets;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONObject;
@@ -25,14 +30,36 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * @author yangzhenping
  * @date 2015年11月4日 下午1:38:23
  *
- */ 
+ */
 public class JersyClient {
 
 	Logger logger = Logger.getLogger(JersyClient.class);
-	
-	private static String URI = "http://192.168.190.195:8083/resources/";
-	
-	private static Client client = Client.create();
+
+    private static final String serverHost = "192.168.190.195";
+
+    private static final Integer serverPort = 8083;
+
+    private static final String URI = "http://192.168.190.195:8083/resources/";
+
+	private OAuthParameters params = new OAuthParameters().signature("HAMC-SHA1").consumerKey("key");
+
+	private OAuthSecrets secrets = new OAuthSecrets().consumerSecret("secret");
+
+    private ClientConfig config = new DefaultClientConfig();
+
+    private Client client;
+
+    public JersyClient(){
+        //SSLContext ctx = SSLContext.getInstance("SSL");
+        //ctx.init(null, myTrustManager, null);
+        //config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hostnameVerifier, ctx));
+        config.getClasses().add(JSONRootElementProvider.class);
+        URLConnectionClientHandler cc = new URLConnectionClientHandler(new ConnectionFactory(serverHost, serverPort));
+        client = new Client(cc);
+        client.setConnectTimeout(2000000);
+    }
+
+	private OAuthClientFilter filter = new OAuthClientFilter(client.getProviders(), params, secrets);
 
 	public void testResource() throws URISyntaxException {  
 	      
@@ -108,7 +135,8 @@ public class JersyClient {
 		try {
 			serverUri = new URI(URI + uri);
 			logger.info("URI=" + serverUri);
-		    WebResource resource = client.resource(serverUri);  
+		    WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
 		    //get  
 		    String result = resource.get(String.class);  
 		    logger.info("result=" + result);
@@ -142,6 +170,7 @@ public class JersyClient {
 			serverUri = new URI(URI + uri);
 			logger.info("URI=" + serverUri);
 			WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
 			String params = mapper.writeValueAsString(person);
 			logger.info("params=" + params);
 		    //post
@@ -172,6 +201,7 @@ public class JersyClient {
 			serverUri = new URI(URI + uri);
 			logger.info("URI=" + serverUri);
 			WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
 			String params = mapper.writeValueAsString(person);
 			logger.info("params=" + params);
 		    //put
@@ -202,6 +232,7 @@ public class JersyClient {
 			serverUri = new URI(URI + uri);
 			logger.info("URI=" + serverUri);
 			WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
 			String params = mapper.writeValueAsString(id);
 			logger.info("params=" + params);
 		    //delete
