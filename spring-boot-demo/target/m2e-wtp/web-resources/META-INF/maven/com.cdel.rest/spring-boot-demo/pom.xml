@@ -7,9 +7,7 @@
     <artifactId>rest-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>com.cdel.rest</groupId>
   <artifactId>spring-boot-demo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>spring-boot-demo Maven Webapp</name>
   <url>http://maven.apache.org</url>
@@ -17,7 +15,7 @@
   <properties>
     	<spring.version>3.0.5.RELEASE</spring.version>
         <jersey.version>1.1.4.1</jersey.version>
-        <spring.boot.version>1.2.7.RELEASE</spring.boot.version>
+        <spring.boot.version>1.2.0.RELEASE</spring.boot.version>
         <!-- Avoids MacRoman encoding on OSX -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

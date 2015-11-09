@@ -15,6 +15,8 @@ import com.sun.jersey.json.impl.provider.entity.JSONRootElementProvider;
 import com.sun.jersey.oauth.client.OAuthClientFilter;
 import com.sun.jersey.oauth.signature.OAuthParameters;
 import com.sun.jersey.oauth.signature.OAuthSecrets;
+
+import org.apache.coyote.ErrorState;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONObject;
@@ -36,31 +38,128 @@ public class JersyClient {
 	Logger logger = Logger.getLogger(JersyClient.class);
 
     private static final String serverHost = "192.168.190.195";
-
     private static final Integer serverPort = 8083;
-
     private static final String URI = "http://192.168.190.195:8083/resources/";
-
+    //与服务器连接做的校验
 	private OAuthParameters params = new OAuthParameters().signature("HAMC-SHA1").consumerKey("key");
-
 	private OAuthSecrets secrets = new OAuthSecrets().consumerSecret("secret");
-
+	//客户端进行复用
     private ClientConfig config = new DefaultClientConfig();
-
     private Client client;
 
     public JersyClient(){
-        //SSLContext ctx = SSLContext.getInstance("SSL");
+        //针对https请求
+    	//SSLContext ctx = SSLContext.getInstance("SSL");
         //ctx.init(null, myTrustManager, null);
         //config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hostnameVerifier, ctx));
-        config.getClasses().add(JSONRootElementProvider.class);
-        URLConnectionClientHandler cc = new URLConnectionClientHandler(new ConnectionFactory(serverHost, serverPort));
-        client = new Client(cc);
+        //对连接做了代理
+    	//URLConnectionClientHandler cc = new URLConnectionClientHandler(new ConnectionFactory(serverHost, serverPort));
+    	config.getClasses().add(JSONRootElementProvider.class);
+        client = Client.create(config);
         client.setConnectTimeout(2000000);
     }
 
 	private OAuthClientFilter filter = new OAuthClientFilter(client.getProviders(), params, secrets);
 
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getList(String uri, Map<String, Object> params, String version, String token){
+		ObjectMapper mapper = new ObjectMapper();
+		List<Person> persons = new ArrayList<Person>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		URI serverUri;
+		try {
+			serverUri = new URI(URI + uri);
+			logger.info("URI=" + serverUri);
+		    WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
+		    //get  
+		    String result = resource.get(String.class);  
+		    logger.info("result=" + result);
+		    JSONObject jsonObject = new JSONObject(result);
+		    //resolve error code
+		    String code = "success";
+		    if(!jsonObject.has("code")){
+		    	code = "E00001";
+		    }else {
+		    	code = (String)jsonObject.get("code");
+			}		    
+		    if("".equals(code)){
+		    	code = "E10001";
+		    }
+		    //resolve object
+		    persons = mapper.readValue(jsonObject.getString("person"), List.class);
+		    
+		    resultMap.put("code", code);
+		    resultMap.put("data", persons);
+		} catch (Exception e) {
+			logger.error("Jersey Client Get List Error", e);
+		}  
+		return resultMap;
+	}
+	
+	public void savePerson(String uri, Person person, String version, String token){
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		URI serverUri;
+		try {
+			serverUri = new URI(URI + uri);
+			logger.info("URI=" + serverUri);
+			WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
+			String params = mapper.writeValueAsString(person);
+			logger.info("params=" + params);
+		    //post
+		    String result = resource.type(MediaType.APPLICATION_JSON).post(String.class, params);
+		    logger.info("result=" + result);
+		    JSONObject jsonObject = new JSONObject(result);
+		    //resolve error code
+		} catch (Exception e) {
+			logger.error("Jersey Client Save Person Error", e);
+		}
+	}
+	
+	public void updatePerson(String uri, Person person, String version, String token){
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		URI serverUri;
+		try {
+			serverUri = new URI(URI + uri);
+			logger.info("URI=" + serverUri);
+			WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
+			String params = mapper.writeValueAsString(person);
+			logger.info("params=" + params);
+		    //put
+		    String result = resource.entity(params).put(String.class);
+		    logger.info("result=" + result);
+		    JSONObject jsonObject = new JSONObject(result);
+		    //resolve error code
+		} catch (Exception e) {
+			logger.error("Jersey Client Update Person Error", e);
+		}
+	}
+	
+	public void deletePerson(String uri, Integer id, String version, String token){
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		URI serverUri;
+		try {
+			serverUri = new URI(URI + uri);
+			logger.info("URI=" + serverUri);
+			WebResource resource = client.resource(serverUri);
+            resource.addFilter(filter);
+			String params = mapper.writeValueAsString(id);
+			logger.info("params=" + params);
+		    //delete
+		    String result = resource.entity(params).put(String.class);
+		    logger.info("result=" + result);
+		    JSONObject jsonObject = new JSONObject(result);
+		    //resolve error code
+		} catch (Exception e) {
+			logger.error("Jersey Client Delete Person Error", e);
+		}
+	}
+	//连接服务端的例子
 	public void testResource() throws URISyntaxException {  
 	      
 	    URI u = new URI(URI);  
@@ -125,133 +224,5 @@ public class JersyClient {
 	    ByteArrayInputStream bais = new ByteArrayInputStream(buf.getBytes());  
 	    result = resource.entity(bais).post(String.class);  
 	    System.out.println(result);  
-	}
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> getList(String uri, Map<String, Object> params, String version, String token){
-		ObjectMapper mapper = new ObjectMapper();
-		List<Person> persons = new ArrayList<Person>();
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		URI serverUri;
-		try {
-			serverUri = new URI(URI + uri);
-			logger.info("URI=" + serverUri);
-		    WebResource resource = client.resource(serverUri);
-            resource.addFilter(filter);
-		    //get  
-		    String result = resource.get(String.class);  
-		    logger.info("result=" + result);
-		    JSONObject jsonObject = new JSONObject(result);
-		    //resolve error code
-		    String code = "success";
-		    if(!jsonObject.has("code")){
-		    	code = "E00001";
-		    }else {
-		    	code = (String)jsonObject.get("code");
-			}		    
-		    if("".equals(code)){
-		    	code = "E10001";
-		    }
-		    //resolve object
-		    persons = mapper.readValue(jsonObject.getString("person"), List.class);
-		    
-		    resultMap.put("code", code);
-		    resultMap.put("data", persons);
-		} catch (Exception e) {
-			logger.error("Jersey Client Get List Error", e);
-		}  
-		return resultMap;
-	}
-	
-	public void savePerson(String uri, Person person, String version, String token){
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		URI serverUri;
-		try {
-			serverUri = new URI(URI + uri);
-			logger.info("URI=" + serverUri);
-			WebResource resource = client.resource(serverUri);
-            resource.addFilter(filter);
-			String params = mapper.writeValueAsString(person);
-			logger.info("params=" + params);
-		    //post
-		    String result = resource.type(MediaType.APPLICATION_JSON).post(String.class, params);
-		    logger.info("result=" + result);
-		    JSONObject jsonObject = new JSONObject(result);
-		    //resolve error code
-		    String code = "success";
-		    if(!jsonObject.has("code")){
-		    	code = "E00001";
-		    }else {
-		    	code = (String)jsonObject.get("code");
-			}		    
-		    if("".equals(code)){
-		    	code = "E20001";
-		    }
-		    resultMap.put("code", code);
-		} catch (Exception e) {
-			logger.error("Jersey Client Save Person Error", e);
-		}
-	}
-	
-	public void updatePerson(String uri, Person person, String version, String token){
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		URI serverUri;
-		try {
-			serverUri = new URI(URI + uri);
-			logger.info("URI=" + serverUri);
-			WebResource resource = client.resource(serverUri);
-            resource.addFilter(filter);
-			String params = mapper.writeValueAsString(person);
-			logger.info("params=" + params);
-		    //put
-		    String result = resource.entity(params).put(String.class);
-		    logger.info("result=" + result);
-		    JSONObject jsonObject = new JSONObject(result);
-		    //resolve error code
-		    String code = "success";
-		    if(!jsonObject.has("code")){
-		    	code = "E00001";
-		    }else {
-		    	code = (String)jsonObject.get("code");
-			}		    
-		    if("".equals(code)){
-		    	code = "E20001";
-		    }
-		    resultMap.put("code", code);
-		} catch (Exception e) {
-			logger.error("Jersey Client Update Person Error", e);
-		}
-	}
-	
-	public void deletePerson(String uri, Integer id, String version, String token){
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		URI serverUri;
-		try {
-			serverUri = new URI(URI + uri);
-			logger.info("URI=" + serverUri);
-			WebResource resource = client.resource(serverUri);
-            resource.addFilter(filter);
-			String params = mapper.writeValueAsString(id);
-			logger.info("params=" + params);
-		    //delete
-		    String result = resource.entity(params).put(String.class);
-		    logger.info("result=" + result);
-		    JSONObject jsonObject = new JSONObject(result);
-		    //resolve error code
-		    String code = "success";
-		    if(!jsonObject.has("code")){
-		    	code = "E00001";
-		    }else {
-		    	code = (String)jsonObject.get("code");
-			}		    
-		    if("".equals(code)){
-		    	code = "E20001";
-		    }
-		    resultMap.put("code", code);
-		} catch (Exception e) {
-			logger.error("Jersey Client Delete Person Error", e);
-		}
 	}
 }
