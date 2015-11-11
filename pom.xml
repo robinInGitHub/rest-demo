@@ -21,5 +21,6 @@
     <module>rest-app</module>
     <module>rest-ws</module>
     <module>spring-boot-demo</module>
+    <module>rest-common</module>
   </modules>
 </project>

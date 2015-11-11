@@ -6,27 +6,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
 http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
   
-  	<!-- 客户端IP认证 -->
-    <!-- <bean id="ipInterceptor" class="com.cdel.rest.security.IpAddressInInterceptor">
-       <property name="ipList" value="${security.allowable_ip}"></property>  
-    </bean> --> 
-    
-  	<!-- 配置安全认证方式 -->
-    <!-- <bean id="serverWSS4JInInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">  
-        <constructor-arg>  
-            <map>  
-                <entry key="action" value="UsernameToken Timestamp" />  
-                <entry key="passwordType" value="PasswordDigest" />
-                <entry key="passwordCallbackRef">  
-                    <ref bean="serverPasswordCallback" />  
-                </entry>  
-            </map>  
-        </constructor-arg>  
-    </bean>
-    
-    <bean id="serverPasswordCallback" class="com.cdel.ws.demo.security.UTPasswordCallback">
-        <property name="username" value="${security.username}" />
-        <property name="password" value="${security.password}" />
-    </bean> -->
+  	<!-- IP Manager -->
+  	
 
 </beans>

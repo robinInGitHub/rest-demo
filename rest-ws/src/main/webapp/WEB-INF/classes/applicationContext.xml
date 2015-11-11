@@ -39,38 +39,31 @@
         <property name="password" value="${database.password}"/>
     </bean>
     
-     <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->  
+     <!-- spring and MyBatis config -->  
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
-        <property name="dataSource" ref="dataSourceR" />  
-        <!-- 自动扫描mapping.xml文件 -->  
+        <property name="dataSource" ref="dataSourceR" />
         <property name="mapperLocations" value="classpath:mybatis/read/*.xml"></property>  
-    </bean>  
-  
-    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->  
+    </bean>
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
         <property name="basePackage" value="com.cdel.rest.dao.read" />  
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
-    </bean>
-    
+    </bean>    
     <bean id="sqlSessionFactoryW" class="org.mybatis.spring.SqlSessionFactoryBean">  
-        <property name="dataSource" ref="dataSourceW" />  
-        <!-- 自动扫描mapping.xml文件 -->  
+        <property name="dataSource" ref="dataSourceW" />
         <property name="mapperLocations" value="classpath:mybatis/write/*.xml"></property>  
-    </bean>  
-  
-    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->  
+    </bean>
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
         <property name="basePackage" value="com.cdel.rest.dao.write" />  
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryW"></property>  
     </bean>
   
-    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+    <!-- transaction manager, use JtaTransactionManager for global tx -->
     <aop:config>
 		<aop:pointcut id="serviceMethods" expression="execution(* *..*ServiceImpl.do*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods" />
 	</aop:config>
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
-	   <!-- 全部加事务 -->
+	   <!-- all -->
 		<tx:attributes>
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
@@ -78,7 +71,10 @@
     <bean id="transactionManager"  
         class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
         <property name="dataSource" ref="dataSourceW" />
-    </bean> 
+    </bean>
+    
+    <!-- spring security setup -->
+    <import resource="spring-security.xml" />
 </beans>
 
 
