@@ -16,7 +16,7 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<spring.version>4.0.2.RELEASE</spring.version>
+		<spring.version>3.0.5.RELEASE</spring.version>
 		<jersey.version>1.18</jersey.version>
 		<mybatis.version>3.2.8</mybatis.version>
 		<slf4j.version>1.7.7</slf4j.version>

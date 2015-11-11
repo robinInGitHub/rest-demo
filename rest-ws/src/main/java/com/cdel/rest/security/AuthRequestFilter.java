@@ -9,7 +9,7 @@ import com.sun.jersey.oauth.signature.OAuthSignature;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
-public class mynew implements ContainerRequestFilter {
+public class AuthRequestFilter implements ContainerRequestFilter {
 
     public ContainerRequest filter(ContainerRequest arg0) {
         OAuthServerRequest oauthRequest = new OAuthServerRequest(arg0);
